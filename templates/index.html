@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Flight Fare Predictor</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/materialize.css') }}" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="{{ url_for('static', filename='css/style.css') }}" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <style>
+    /* CSS code for placeholder color */
+    ::placeholder {
+      color: #747070; /* Dark gray color */
+    }
+
+    /* CSS code for the quote and author section */
+    .quote-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .quote {
+      font-size: 24px;
+      font-style: italic;
+      color: #333; /* Dark gray color */
+    }
+
+    .author {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #666; /* Gray color */
+    }
+
+    /* Price box styles */
+    .price-box {
+      background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .price-box h2 {
+      font-size: 36px;
+      margin: 0;
+      color: #ff4081; /* Pink color */
+    }
+
+    input::placeholder {
+      color: black;
+    }
+
+    /* Blinking text animation */
+    @keyframes blinking {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    /* CSS code to fill color in between main and footer gap */
+    html, body {
+      height: 100%; /* Make sure the body takes up the full height of the viewport */
+      margin: 0; /* Remove default margin */
+    }
+
+    .main-content {
+      min-height: calc(100vh - 250px); /* Adjust the value based on your footer height */
+      /* The value should be the height of the viewport minus the height of the footer */
+      background-color: #fff; /* Change the color as needed */
+      padding-bottom: 50px; /* Adjust as needed to create some space between the main content and footer */
+    }
+
+    /* Style for the footer */
+    footer.page-footer {
+      position: relative; /* Footer is positioned relative to the document flow */
+      width: 100%; /* Make the footer full width */
+      background-color: #00bcd4; /* Cyan background color for the footer */
+    }
+
+    .footer-container {
+      margin-top: auto; /* Push the footer to the bottom if content is shorter than the viewport */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main-content pink lighten-5">
+    <div class="section no-pad-bot" id="index-banner">
+      <div class="container">
+        <br><br>
+        <h1 class="header center cyan-text">Flight Fare Prediction</h1>
+        <div class="row center">
+          <h5 class="header col s12 light">Predict Flight Fare within seconds</h5>
+        </div>
+        <div class="row">
+          <form action='/predict' method="post" class="col s12">
+            <div class="row">
+              <div class="input-field col s4">
+                <label for="Source" style="color: #494646;"><b>Source</b></label>
+                <br>
+                <input list="Source_list" placeholder="Source City" name="Source" id="Source" type="text" class="validate" required="required" style="color: black;">
+                <datalist id="Source_list">
+                  <option value="Delhi"/>
+                  <option value="Kolkata"/>
+                  <option value="Mumbai"/>
+                  <option value="Chennai"/>
+                  <option value="Bangalore"/>
+                </datalist>
+              </div>
+              <div class="input-field col s4">
+                <label for="last_name" style="color: #494646;"><b>Destination</b></label>
+                <br>
+                <input list="dest_list" id="last_name" name="Destination" placeholder="Destination City" type="text" class="validate" required="required">
+                <datalist id="dest_list">
+                  <option value="Hyderabad"/>
+                  <option value="Cochin"/>
+                  <option value="Delhi"/>
+                  <option value="New Delhi"/>
+                  <option value="Bangalore"/>
+                  <option value="Kolkata"/>
+                </datalist>
+              </div>
+              <div class="input-field col s4">
+                <label for="_name" style="color: #494646;"><b>Date and Departure Time</b></label>
+                <br>
+                <input id="_name" name="Date" type="datetime-local" class="validate" required="required">
+              </div>
+              <div class="input-field col s4">
+                <label for="third_name" style="color: #494646;"><b>Airline</b></label>
+                <br>
+                <input list="airline_list" placeholder="Airline Preferred" name="Airline" id="third_name" type="text" class="validate" required="required">
+                <datalist id="airline_list">
+                  <option value="Jet Airways"/>
+                  <option value="IndiGo"/>
+                  <option value="Air India"/>
+                  <option value="Multiple carriers"/>
+                  <option value="SpiceJet"/>
+                  <option value="Vistara"/>
+                  <option value="Air Asia"/>
+                  <option value="GoAir"/>
+                  <option value="Multiple carriers Premium economy"/>
+                  <option value="Jet Airways Business"/>
+                  <option value="Vistara Premium economy"/>
+                  <option value="Trujet"/>
+                </datalist>
+              </div>
+              <div class="input-field col s4">
+                <label for="fifth_name" style="color: #494646;"><b>Stops</b></label>
+                <br>
+                <input list="stop_list" placeholder="eg. 0 means NonStop" name="Stops" id="fifth_name" type="text" class="validate" required="required">
+                <datalist id="stop_list">
+                  <option value="0">Non-Stop</option>
+                  <option value="1"/>
+                  <option value="2"/>
+                  <option value="3"/>
+                  <option value="4"/>
+                </datalist>
+              </div>
+            </div>
+            <div class="row center">
+              <button type="submit" class="btn-large waves-effect waves-light cyan">Predict Flight Fare</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Inside the HTML where you display the price -->
+        <div class="row center">
+          <div class="price-box">
+            <h2>{{pred}}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-container">
+    <footer class="page-footer cyan">
+      <div class="container">
+        <div class="row">
+          <div class="quote-container">
+            <blockquote class="quote">
+              “Computers are able to see, hear and learn. Welcome to the future.”
+            </blockquote>
+            <p class="author">~ Dave Waters</p>
+          </div>
+          <div class="col l3 s12">
+            <h6 class="white-text">Source City Available (Click any to know more)</h6>
+            <ul>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Bangalore">Bangalore</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Chennai">Chennai</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Delhi">Delhi</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Kolkata">Kolkata</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Mumbai">Mumbai</a></li>
+            </ul>
+          </div>
+          <div class="col l3 s12">
+            <h6 class="white-text">Destination City Available (Click any to know more)</h6>
+            <ul>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Bangalore">Bangalore</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Kochi">Cochin</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Delhi">Delhi</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Hyderabad">Hyderabad</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Kolkata">Kolkata</a></li>
+            </ul>
+          </div>
+          <div class="col l3 s12">
+            <h6 class="white-text">Airlines Available (Click any to know more)</h6>
+            <ul>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Air_India">Air India</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/GoAir">GoAir</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/IndiGo">IndiGo</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/SpiceJet">SpiceJet</a></li>
+              <li><a class="white-text" href="https://en.wikipedia.org/wiki/Vistara">Vistara</a></li>
+            </ul>
+          </div>
+          <div class="col l3 s12">
+            <h6 class="white-text">Additional Links</h6>
+            <ul>
+              <li><a class="white-text" href="https://www.google.com">Google</a></li>
+              <li><a class="white-text" href="https://www.bing.com">Bing</a></li>
+              <li><a class="white-text" href="https://www.yahoo.com">Yahoo</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        <div class="container">
+          Made by <a class="orange-text text-lighten-3" href="#">Your Name</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

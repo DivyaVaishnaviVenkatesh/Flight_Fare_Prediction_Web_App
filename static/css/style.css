@@ -1,0 +1,45 @@
+
+/* Price box styles */
+.price-box { /* Semi-transparent white background */
+    color:pink light;
+    padding: 20px;
+    border-radius: 10px;
+    
+    text-align: center;
+}
+
+.price-box h2 {
+    font-size: 36px;
+    margin: 0;
+}
+input::placeholder {
+    color: black;
+}
+
+
+
+/* Blinking text animation */
+@keyframes blinking {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+/* CSS code to fill color in between main and footer gap */
+html, body {
+    height: 100%; /* Make sure the body takes up the full height of the viewport */
+}
+
+.main-content {
+    min-height: calc(100% - 250px); /* Adjust the value based on your footer height */
+    /* The value should be the height of the viewport minus the height of the footer */
+    background-color: #fff; /* Change the color as needed */
+    padding-bottom: 50px; /* Adjust as needed to create some space between the main content and footer */
+}
+
+/* Style for the footer */
+footer.page-footer {
+    position: fixed; /* Fix the footer to the bottom of the viewport */
+    width: 100%; /* Make the footer full width */
+    bottom: 0; /* Position it at the bottom */
+}
+
